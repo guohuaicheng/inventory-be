@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--命名空间应该是对应接口的包名+接口名 -->
+<mapper namespace="com.yourshop.platform.tenant.dao.TenantDao">
+
+    <resultMap id="tenant" type="com.yourshop.platform.tenant.model.Tenant">
+        <result column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="domain_url" property="domainUrl"/>
+        <result column="datasource_id" property="datasourceId"/>
+        <result column="description" property="description"/>
+        <result column="enable_flag" property="enableFlag"/>
+        <result column="del_flag" property="delFlag"/>
+        <result column="created_time" property="createdTime"/>
+        <result column="created_user" property="createdUser"/>
+        <result column="updated_time" property="updatedTime"/>
+        <result column="updated_user" property="updatedUser"/>
+    </resultMap>
+
+    <select id="getById" resultMap="tenant">
+        SELECT *
+        FROM p_tenant
+        WHERE id = #{id}
+    </select>
+
+    <select id="getByDomainUrl" resultMap="tenant">
+        SELECT *
+        FROM p_tenant
+        WHERE domain_url = #{domainUrl}
+    </select>
+
+    <select id="query" resultMap="tenant">
+        SELECT *
+        FROM p_tenant
+        WHERE 1 = 1 AND del_flag = 0
+    </select>
+
+    <insert id="insert" parameterType="com.yourshop.platform.tenant.model.Tenant">
+        INSERT INTO p_tenant (name, domain_url, datasource_id, description, created_user, created_time)
+        VALUES (#{name}, #{domainUrl}, #{datasourceId}, #{description}, #{createdUser}, #{createdTime})
+    </insert>
+
+    <update id="update" parameterType="com.yourshop.platform.tenant.model.Tenant">
+        UPDATE p_tenant
+        SET
+            name         = #{name},
+            domainUrl    = #{domainUrl},
+            datasourceId = #{datasourceId},
+            description  = #{description},
+            enable_flag  = #{enableFlag},
+            updated_time = #{updatedTime},
+            updated_user = #{updatedUser}
+        WHERE id = #{id}
+    </update>
+
+    <update id="remove">
+        UPDATE p_tenant
+        SET del_flag     = 1,
+            updated_time = #{updatedTime},
+            updated_user = #{updatedUser}
+        WHERE id = #{id}
+    </update>
+
+</mapper>

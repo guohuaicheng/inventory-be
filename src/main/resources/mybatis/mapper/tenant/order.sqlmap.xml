@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--命名空间应该是对应接口的包名+接口名 -->
+<mapper namespace="com.yourshop.tenant.order.dao.OrderDao">
+
+    <resultMap id="order" type="com.yourshop.tenant.order.model.Order">
+        <result column="id" property="id"/>
+        <result column="vip_id" property="vipId"/>
+        <result column="total_price" property="totalPrice"/>
+        <result column="created_time" property="createdTime"/>
+        <result column="created_user" property="createdUser"/>
+        <result column="tenant_id" property="tenantId"/>
+    </resultMap>
+
+    <!--<select id="getById" resultMap="tenant">-->
+    <!--SELECT *-->
+    <!--FROM tenant-->
+    <!--WHERE id = #{id}-->
+    <!--</select>-->
+
+    <!--<select id="queryAll" resultMap="tenant">-->
+    <!--SELECT *-->
+    <!--FROM tenant-->
+    <!--WHERE 1 = 1-->
+    <!--</select>-->
+
+    <!--<select id="getById" resultType="Tenant">-->
+    <!--SELECT *-->
+    <!--FROM tenant-->
+    <!--WHERE id = #{id}-->
+    <!--</select>-->
+
+    <insert id="insert" parameterType="com.yourshop.tenant.order.model.Order">
+        INSERT INTO t_order_${tenantIndex%10} (id, vip_id, total_price, created_time, created_user, tenant_id)
+        VALUES (#{id}, #{vipId}, #{totalPrice}, #{createdTime}, #{createdUser}, #{tenantId});
+    </insert>
+    <!--&lt;!&ndash; 删除商品 &ndash;&gt;-->
+    <!--<delete id="delete">-->
+    <!--delete from goods where id=#{id}-->
+    <!--</delete>-->
+    <!--&lt;!&ndash; 修改商品 &ndash;&gt;-->
+    <!--<update id="update" parameterType="Goods">-->
+    <!--update goods set-->
+    <!--name=#{name},price=#{price},picture=#{picture} where id=#{id}-->
+    <!--</update>-->
+</mapper>

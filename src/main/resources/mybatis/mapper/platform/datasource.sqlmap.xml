@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--命名空间应该是对应接口的包名+接口名 -->
+<mapper namespace="com.yourshop.platform.datasource.dao.DatasourceDao">
+
+    <resultMap id="datasource" type="com.yourshop.platform.datasource.model.Datasource">
+        <result column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="driver" property="driver"/>
+        <result column="url" property="url"/>
+        <result column="user" property="user"/>
+        <result column="password" property="password"/>
+        <result column="max_pool_size" property="maxPoolSize"/>
+        <result column="min_pool_size" property="minPoolSize"/>
+        <result column="checkout_timeout" property="checkoutTimeout"/>
+        <result column="initial_pool_size" property="initialPoolSize"/>
+        <result column="max_idle_time" property="maxIdleTime"/>
+        <result column="acquire_increment" property="acquireIncrement"/>
+        <result column="enable_flag" property="enableFlag"/>
+        <result column="del_flag" property="delFlag"/>
+        <result column="created_time" property="createdTime"/>
+        <result column="created_user" property="createdUser"/>
+        <result column="updated_time" property="updatedTime"/>
+        <result column="updated_user" property="updatedUser"/>
+        <result column="description" property="description"/>
+    </resultMap>
+
+    <resultMap id="datasourceVO" type="com.yourshop.platform.datasource.model.DatasourceVO" extends="datasource">
+        <result column="tenantCount" property="tenantCount"/>
+    </resultMap>
+
+    <select id="getById" resultMap="datasource">
+        SELECT *
+        FROM p_datasource
+        WHERE id = #{id}
+    </select>
+
+    <select id="query" resultMap="datasourceVO">
+        SELECT d.*, count(t.id) as tenantCount
+        FROM p_datasource d LEFT JOIN p_tenant t on d.id = t.datasource_id
+        WHERE 1 = 1 AND d.del_flag = 0 group by d.id
+        ORDER BY tenantCount, d.created_time DESC
+    </select>
+
+    <select id="count" resultType="int">
+        SELECT count(1)
+        FROM p_datasource
+        WHERE 1 = 1 AND del_flag = 0
+    </select>
+
+    <insert id="insert" parameterType="com.yourshop.platform.datasource.model.Datasource">
+        INSERT INTO p_datasource (id, name, driver, url, user, password, max_pool_size, min_pool_size, checkout_timeout, initial_pool_size, max_idle_time, acquire_increment, description, created_user, created_time)
+        VALUES (#{id}, #{name}, #{driver}, #{url}, #{user}, #{password}, #{maxPoolSize}, #{minPoolSize},
+                       #{checkoutTimeout},
+                       #{initialPoolSize}, #{maxIdleTime}, #{acquireIncrement},
+                #{description}, #{createdUser}, #{createdTime})
+    </insert>
+
+    <update id="update" parameterType="com.yourshop.platform.datasource.model.Datasource">
+        UPDATE p_datasource
+        SET name              = #{name}, driver = #{driver}, url = #{url}, user = #{user},
+            password          = #{password}, max_pool_size = #{maxPoolSize}, min_pool_size = #{minPoolSize},
+            checkout_timeout  = #{checkoutTimeout}, initial_pool_size = #{initialPoolSize},
+            max_idle_time     = #{maxIdleTime},
+            acquire_increment = #{acquireIncrement},
+            description       = #{description},
+            enable_flag       = #{enableFlag},
+            updated_time      = #{updatedTime},
+            updated_user      = #{updatedUser}
+        WHERE id = #{id}
+    </update>
+
+    <update id="remove">
+        UPDATE p_datasource
+        SET del_flag     = 1,
+            updated_time = #{updatedTime},
+            updated_user = #{updatedUser}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM p_datasource
+        WHERE id = #{id}
+    </delete>
+</mapper>

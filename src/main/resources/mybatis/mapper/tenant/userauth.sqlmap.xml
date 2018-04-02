@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--命名空间应该是对应接口的包名+接口名 -->
+<mapper namespace="com.yourshop.login.dao.TenantUserAuthDao">
+    <resultMap id="userAuth" type="com.yourshop.login.model.UserAuth">
+        <result column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="tenant_id" property="tenantId"/>
+    </resultMap>
+
+    <select id="get" resultMap="userAuth">
+        SELECT
+            *
+        FROM t_user_auth
+        WHERE 1 = 1 AND username = #{username} AND tenant_id = #{tenantId}
+    </select>
+</mapper>
